@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <meta charset="UTF-8">
+    <title>Click Beach</title>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'>
+</head>
+<body>
+    <section> <!-- Header -->
+
+    </section>
+
+    <!-- ----- INDEX ----- -->
+    <section id="index">
+        <section id="welcome"> <!-- Welcome -->
+            <h1>Welcome to Click Beach</h1>
+            <p id="displayInfoRight"></p>
+            <p>You may join a game room as a guest or connect to / create an account</p>
+        </section>
+
+        <section class="leftstyle">
+            <h2>Create a Game</h2>
+            <form>
+                <input type="text" placeholder="Name of the game" id="createText" maxlength="30">
+                <input type="button" value="Create" id="createGameButton">
+            </form>
+        </section>
+
+        <section class="leftstyle"> <!-- List games -->
+            <h2>Current Games:</h2>
+            <div id="currentGames">
+
+            </div>
+        </section>
+    </section>
+    <!-- ----- END INDEX ----- -->
+
+    <!-- ----- GAME ----- -->
+    <section id="game">
+        <section id="backHome">
+            Back to Home
+        </section>
+        <section id="startGame">
+            Start Game
+        </section>
+        <canvas id="gameCanvas"></canvas>
+    </section>
+    <!-- ----- END GAME ----- -->
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script   src="https://code.jquery.com/jquery-2.2.1.min.js"   integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="   crossorigin="anonymous"></script>
+<script>
+    var socket = io.connect();
+    var guestId = 0;
+    var currentGame = {
+        playerNumber: 0,
+        roomName: "",
+        roomId: 0,
+        players: []
+    };
+
+    /* ----- MAIN LOOP ????? ----- */
+        socket.on("join game", function(gameRoom) {
+            currentGame.playerNumber = gameRoom.playerNumber;
+            currentGame.roomName = gameRoom.roomName;
+            currentGame.roomId = gameRoom.roomId;
+            currentGame.players = gameRoom.players;
+            console.log("playnum = " + currentGame.playerNumber + " roomname = " + currentGame.roomName + " roomid = " + currentGame.roomId + " player = " + currentGame.players);
+        });
+
+    /* ----- END MAIN LOOP ----- */
+
+    /* -- test ignore -- */
+    var test = document.getElementById("game");
+    var then = window.getComputedStyle(test, null);
+    var so = then['display'];
+    if (so == "block"){
+        console.log("youpi");
+    }
+    /* -- test ignore -- */
+
+    /* ----- HANDLING THE DISPLAY OF USER ACCOUNT ----- */
+    socket.on("account info", function(data) {
+        var playerName = $('#displayInfoRight');
+        playerName.append("You are guest: " + data);
+        guestId = data;
+    });
+    /* ----- END OF HANDLING USER ACCOUNT ----- */
+
+    /* ----- CREATE, DISPLAY AND LISTEN TO CURRENT GAMES ----- */
+    socket.on("current games", function(gameList) {
+        var cG = $("#currentGames").empty();
+        for (i = 0; i < gameList.length; i++) {
+            cG.append("<div class='gameList'>" + gameList[i].roomName + "<p class='gameListD'>" + " Number Of Players: " + gameList[i].playerNumber + " id: " + gameList[i].roomId + "</p>");
+        } /* Dynamically Loads the list of games */
+        /* ----- SET LISTENERS ON GAME LIST----- */
+        var selectorGameList = document.querySelectorAll('.gameList');
+        var selectorGameListD = document.querySelectorAll('.gameListD');
+        for (var i = 0; i < selectorGameList.length; i++) {
+            selectorGameList.item(i).addEventListener("mouseover", gameRoomMouseover, false);
+            selectorGameList.item(i).addEventListener("mouseleave", gameRoomMouseleave, false);
+            selectorGameListD.item(i).addEventListener("mouseover", gameRoomMouseover, false);
+            selectorGameListD.item(i).addEventListener("mouseleave", gameRoomMouseleave, false);
+            selectorGameList.item(i).removeEventListener("click", gameRoomClicker, false);
+            selectorGameList.item(i).addEventListener("click", gameRoomClicker, false);
+        }
+        /* ----- END ----- */
+    });
+    /* ----- END OF HANDLING CURRENT GAMES ----- */
+
+    /* ----- FUNCTIONS ----- */
+    function getRoomId(target) {
+        var all = target.length;
+        var buffer;
+        for (i = target.length - 1; target[i] != " " && i >= 0; i--){
+            buffer += target[i];
+        }
+        buffer = buffer.replace("undefined", '');
+        buffer = reverse(buffer);
+        return buffer;
+    }
+    function reverse(s){
+        return s.split("").reverse().join("");
+    }
+    function gameRoomClicker(event) {
+        var roomId = getRoomId(event.target.textContent);
+        console.log(roomId);
+        event.stopPropagation();
+    }
+    function gameRoomMouseover(event) {
+        $(event.target).css("background-color", "#555555");
+    }
+    function gameRoomMouseleave(event) {
+        $(event.currentTarget).css("background-color", "#666666");
+    }
+    function toJson() {
+        var str = [];
+        for (var i = 0; i < arguments.length; i++) {
+            str += arguments[i] + " ";
+        }
+        return JSON.stringify(str);
+    }
+    function createGame() {
+        var gameName = document.getElementById("createText").value;
+        if (gameName){
+            socket.emit('createGame', toJson(gameName, guestId))
+        }
+        document.getElementById("createText").value = "";
+        $("#index").css("display", "none");
+        $("#game").css("display", "block");
+    }
+    /* ----- END FUNCTIONS ----- */
+
+    /* ----- LISTENERS ----- */
+    document.getElementById("createGameButton").addEventListener("click", function(event) {
+        createGame();
+        event.stopPropagation()
+    }); /* CREATE GAME VIA BUTTON */
+    document.getElementById("createText").addEventListener("keydown", function(data) {
+        if (data.which == 13){
+            createGame();
+        }
+    }); /* CREATE GAME VIA TEXT BOX */
+    document.getElementById("backHome").addEventListener("click", function(event) {
+        $("#game").css("display", "none");
+        $("#index").css("display", "block");
+        socket.emit("player leave");
+        event.stopPropagation();
+    });
+    document.getElementById("backHome").addEventListener("mouseover", function() {
+        $(this).css("background-color", "#555555");
+    });
+    document.getElementById("backHome").addEventListener("mouseleave", function() {
+        $(this).css("background-color", "#666666");
+    });
+    document.getElementById("startGame").addEventListener("click", function(event) {
+        /* if nbr player < 2 pas start */
+
+        socket.emit("start game");
+        event.stopPropagation();
+    });
+    document.getElementById("startGame").addEventListener("mouseover", function() {
+        $(this).css("background-color", "#555555");
+    });
+    document.getElementById("startGame").addEventListener("mouseleave", function() {
+        $(this).css("background-color", "#666666");
+    });
+    /* ----- END LISTENERS ----- */
+</script>
+</html>
