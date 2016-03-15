@@ -1,6 +1,6 @@
 # clickbeach
 
 ###Node Modules used:
-..* Express
-..* lodash
-..* socket.io
+* Express
+* lodash
+* socket.io
