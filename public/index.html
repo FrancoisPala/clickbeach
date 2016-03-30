@@ -21,10 +21,10 @@
 
         <section class="leftstyle">
             <h2>Create a Game</h2>
-            <form>
+            <div>
                 <input type="text" placeholder="Name of the game" id="createText" maxlength="30">
                 <input type="button" value="Create" id="createGameButton">
-            </form>
+            </div>
         </section>
 
         <section class="leftstyle"> <!-- List games -->
@@ -45,6 +45,9 @@
             Start Game
         </section>
         <canvas id="gameCanvas"></canvas>
+        <section id="gameInfoRight">
+
+        </section>
     </section>
     <!-- ----- END GAME ----- -->
 
@@ -60,26 +63,22 @@
         roomId: 0,
         players: []
     };
+    var hasClicked = 0;
 
     /* ----- MAIN LOOP ????? ----- */
         socket.on("join game", function(gameRoom) {
+            displayGame();
             currentGame.playerNumber = gameRoom.playerNumber;
             currentGame.roomName = gameRoom.roomName;
             currentGame.roomId = gameRoom.roomId;
             currentGame.players = gameRoom.players;
             console.log("playnum = " + currentGame.playerNumber + " roomname = " + currentGame.roomName + " roomid = " + currentGame.roomId + " player = " + currentGame.players);
+            $("#gameInfoRight").append("Players (" + currentGame.playerNumber + ") :<br>");
+            for (var i = 0; i < currentGame.players.length; i++) {
+                $("#gameInfoRight").append(i+1 + ": " + currentGame.players[i] + "<br>");
+            }
         });
-
     /* ----- END MAIN LOOP ----- */
-
-    /* -- test ignore -- */
-    var test = document.getElementById("game");
-    var then = window.getComputedStyle(test, null);
-    var so = then['display'];
-    if (so == "block"){
-        console.log("youpi");
-    }
-    /* -- test ignore -- */
 
     /* ----- HANDLING THE DISPLAY OF USER ACCOUNT ----- */
     socket.on("account info", function(data) {
@@ -112,7 +111,6 @@
 
     /* ----- FUNCTIONS ----- */
     function getRoomId(target) {
-        var all = target.length;
         var buffer;
         for (i = target.length - 1; target[i] != " " && i >= 0; i--){
             buffer += target[i];
@@ -126,7 +124,7 @@
     }
     function gameRoomClicker(event) {
         var roomId = getRoomId(event.target.textContent);
-        console.log(roomId);
+        socket.emit("request join game", toJson(roomId, guestId));
         event.stopPropagation();
     }
     function gameRoomMouseover(event) {
@@ -135,7 +133,7 @@
     function gameRoomMouseleave(event) {
         $(event.currentTarget).css("background-color", "#666666");
     }
-    function toJson() {
+    function toJson(/*whatever we want*/) {
         var str = [];
         for (var i = 0; i < arguments.length; i++) {
             str += arguments[i] + " ";
@@ -148,43 +146,55 @@
             socket.emit('createGame', toJson(gameName, guestId))
         }
         document.getElementById("createText").value = "";
+        displayGame();
+    }
+    function displayGame() {
         $("#index").css("display", "none");
         $("#game").css("display", "block");
     }
     /* ----- END FUNCTIONS ----- */
 
     /* ----- LISTENERS ----- */
-    document.getElementById("createGameButton").addEventListener("click", function(event) {
+    $("#createGameButton").on("click", function(event) {
         createGame();
-        event.stopPropagation()
+        event.stopPropagation();
     }); /* CREATE GAME VIA BUTTON */
-    document.getElementById("createText").addEventListener("keydown", function(data) {
-        if (data.which == 13){
+    $("#createText").on("keydown", function(event) {
+        if (event.which == 13){
             createGame();
+            event.stopPropagation();
         }
     }); /* CREATE GAME VIA TEXT BOX */
-    document.getElementById("backHome").addEventListener("click", function(event) {
+    $("#backHome").on("click", function(event) {
         $("#game").css("display", "none");
         $("#index").css("display", "block");
-        socket.emit("player leave");
+        socket.emit("player leave", toJson(currentGame.roomId, guestId));
         event.stopPropagation();
     });
-    document.getElementById("backHome").addEventListener("mouseover", function() {
+    $("#backHome").on("mouseover", function() {
         $(this).css("background-color", "#555555");
     });
-    document.getElementById("backHome").addEventListener("mouseleave", function() {
+    $("#backHome").on("mouseleave", function() {
         $(this).css("background-color", "#666666");
     });
-    document.getElementById("startGame").addEventListener("click", function(event) {
+    $("#startGame").on("click", function(event) {
         /* if nbr player < 2 pas start */
-
-        socket.emit("start game");
+        if (currentGame.playerNumber < 2){
+            if (hasClicked == 0){
+                $("#startGame").append("<p style='color: red'>You must at least 2 to start a game</p>");
+            }
+            hasClicked = 1;
+        }
+        else {
+            hasClicked = 0;
+            socket.emit("start game");
+        }
         event.stopPropagation();
     });
-    document.getElementById("startGame").addEventListener("mouseover", function() {
+    $("#startGame").on("mouseover", function() {
         $(this).css("background-color", "#555555");
     });
-    document.getElementById("startGame").addEventListener("mouseleave", function() {
+    $("#startGame").on("mouseleave", function() {
         $(this).css("background-color", "#666666");
     });
     /* ----- END LISTENERS ----- */
