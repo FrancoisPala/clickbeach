@@ -25,12 +25,10 @@ class Game {
     }
 
     changePlayerCount(bool) {
-        if (bool === 0){
+        if (bool === 0)
             this.playerCount++;
-        }
-        else if(bool === 1) {
+        else if(bool === 1)
             this.playerCount--;
-        }
     }
 
 }

@@ -12,7 +12,6 @@ class Server {
         this.server = require('http').Server(this.app);
         this.io = require('socket.io')(this.server);
 
-        this.gameNumber = 0; /* to create room ids */
         this.gameId = 0; /* to create room ids */
         this.guestId = 0; /* to create guest ids */
         this.gameList = []; /* all the games currently played on the serv. Contains an array of gameRoom objects */
@@ -21,6 +20,10 @@ class Server {
     start() {
         this.app.use(this.express.static('public'));
         this.server.listen(this.port);
+    }
+
+    incrementGameId (){
+        ++this.gameId;
     }
 }
 

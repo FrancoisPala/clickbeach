@@ -9,11 +9,18 @@ class Player {
         this.tempId = tempId;
         this.socket = socket;
         this.name = "";
-        this.id = "";
+        this.id = 0;
         this.mail = "";
         this.password = "";
         this.record = "";
         this.nbrWin = "";
+    }
+
+    get playerId() {
+        if (this.id == 0)
+            return this.tempId;
+        else
+            return this.id;
     }
 }
 
