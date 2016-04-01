@@ -22,12 +22,26 @@ class Server {
         this.server.listen(this.port);
     }
 
+    get getGameId (){
+        return this.gameId;
+    }
+
+    get getGuestId () {
+        return this.guestId;
+    }
+
     incrementGameId (){
         ++this.gameId;
     }
-
     incrementGuestId () {
         ++this.guestId;
+    }
+    addGameToList (Game) {
+        this.gameList.push(Game);
+
+        //Ici on peut en profiter pour envoyer un evenement qui montre la liste de game pour afficher ça tuot le temps dynamiquement au fur et a mesure youpitralala
+
+
     }
 }
 

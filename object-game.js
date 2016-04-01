@@ -17,18 +17,19 @@ class Game {
 
     addPlayerToList(player) {
         this.playerList[player] = 0;
+        this.changePlayerCount(0);
     }
 
     incrementScore(player) {
         let tmp = this.playerList[player].value;
-        this.playerList[player] = tmp + 1;
+        this.playerList[player] = tmp++;
     }
 
     changePlayerCount(bool) {
         if (bool === 0)
-            this.playerCount++;
+            ++this.playerCount;
         else if(bool === 1)
-            this.playerCount--;
+            --this.playerCount;
     }
 
 }
