@@ -17,5 +17,7 @@ class Player {
     }
 }
 
+module.exports = function(socket, tempId) {return new Player(socket, tempId);};
+
 
 /* End Player */

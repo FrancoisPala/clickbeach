@@ -11,4 +11,6 @@ class Menu {
     }
 }
 
+module.exports = function() {return new Menu();};
+
 /* End Menu */

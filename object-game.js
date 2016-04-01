@@ -23,7 +23,7 @@ class Game {
         let tmp = this.playerList[player].value;
         this.playerList[player] = tmp + 1;
     }
-    
+
     changePlayerCount(bool) {
         if (bool === 0){
             this.playerCount++;
@@ -32,5 +32,9 @@ class Game {
             this.playerCount--;
         }
     }
+
 }
+
+module.exports = function(roomName, roomId) {return new Game(roomName, roomId);};
+
 /* End Object */
