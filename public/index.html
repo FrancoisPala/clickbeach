@@ -53,7 +53,7 @@
 
 </body>
 <script src="/socket.io/socket.io.js"></script>
-<script   src="https://code.jquery.com/jquery-2.2.1.min.js"   integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="   crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-2.2.1.min.js"   integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="   crossorigin="anonymous"></script>
 <script>
     var socket = io.connect();
     var guestId = 0;
@@ -65,138 +65,12 @@
     };
     var hasClicked = 0;
 
-    /* ----- MAIN LOOP ????? ----- */
-        socket.on("join game", function(gameRoom) {
-            displayGame();
-            currentGame.playerNumber = gameRoom.playerNumber;
-            currentGame.roomName = gameRoom.roomName;
-            currentGame.roomId = gameRoom.roomId;
-            currentGame.players = gameRoom.players;
-            console.log("playnum = " + currentGame.playerNumber + " roomname = " + currentGame.roomName + " roomid = " + currentGame.roomId + " player = " + currentGame.players);
-            $("#gameInfoRight").append("Players (" + currentGame.playerNumber + ") :<br>");
-            for (var i = 0; i < currentGame.players.length; i++) {
-                $("#gameInfoRight").append(i+1 + ": " + currentGame.players[i] + "<br>");
-            }
-        });
-    /* ----- END MAIN LOOP ----- */
 
-    /* ----- HANDLING THE DISPLAY OF USER ACCOUNT ----- */
-    socket.on("account info", function(data) {
-        var playerName = $('#displayInfoRight');
-        playerName.append("You are guest: " + data);
-        guestId = data;
-    });
-    /* ----- END OF HANDLING USER ACCOUNT ----- */
-
-    /* ----- CREATE, DISPLAY AND LISTEN TO CURRENT GAMES ----- */
-    socket.on("current games", function(gameList) {
-        var cG = $("#currentGames").empty();
-        for (i = 0; i < gameList.length; i++) {
-            cG.append("<div class='gameList'>" + gameList[i].roomName + "<p class='gameListD'>" + " Number Of Players: " + gameList[i].playerNumber + " id: " + gameList[i].roomId + "</p>");
-        } /* Dynamically Loads the list of games */
-        /* ----- SET LISTENERS ON GAME LIST----- */
-        var selectorGameList = document.querySelectorAll('.gameList');
-        var selectorGameListD = document.querySelectorAll('.gameListD');
-        for (var i = 0; i < selectorGameList.length; i++) {
-            selectorGameList.item(i).addEventListener("mouseover", gameRoomMouseover, false);
-            selectorGameList.item(i).addEventListener("mouseleave", gameRoomMouseleave, false);
-            selectorGameListD.item(i).addEventListener("mouseover", gameRoomMouseover, false);
-            selectorGameListD.item(i).addEventListener("mouseleave", gameRoomMouseleave, false);
-            selectorGameList.item(i).removeEventListener("click", gameRoomClicker, false);
-            selectorGameList.item(i).addEventListener("click", gameRoomClicker, false);
-        }
-        /* ----- END ----- */
-    });
-    /* ----- END OF HANDLING CURRENT GAMES ----- */
-
-    /* ----- FUNCTIONS ----- */
-    function getRoomId(target) {
-        var buffer;
-        for (i = target.length - 1; target[i] != " " && i >= 0; i--){
-            buffer += target[i];
-        }
-        buffer = buffer.replace("undefined", '');
-        buffer = reverse(buffer);
-        return buffer;
-    }
-    function reverse(s){
-        return s.split("").reverse().join("");
-    }
-    function gameRoomClicker(event) {
-        var roomId = getRoomId(event.target.textContent);
-        socket.emit("request join game", toJson(roomId, guestId));
-        event.stopPropagation();
-    }
-    function gameRoomMouseover(event) {
-        $(event.target).css("background-color", "#555555");
-    }
-    function gameRoomMouseleave(event) {
-        $(event.currentTarget).css("background-color", "#666666");
-    }
-    function toJson(/*whatever we want*/) {
-        var str = [];
-        for (var i = 0; i < arguments.length; i++) {
-            str += arguments[i] + " ";
-        }
-        return JSON.stringify(str);
-    }
-    function createGame() {
-        var gameName = document.getElementById("createText").value;
-        if (gameName){
-            socket.emit('createGame', toJson(gameName, guestId))
-        }
-        document.getElementById("createText").value = "";
-        displayGame();
-    }
-    function displayGame() {
-        $("#index").css("display", "none");
-        $("#game").css("display", "block");
-    }
-    /* ----- END FUNCTIONS ----- */
-
-    /* ----- LISTENERS ----- */
-    $("#createGameButton").on("click", function(event) {
-        createGame();
-        event.stopPropagation();
-    }); /* CREATE GAME VIA BUTTON */
-    $("#createText").on("keydown", function(event) {
-        if (event.which == 13){
-            createGame();
-            event.stopPropagation();
-        }
-    }); /* CREATE GAME VIA TEXT BOX */
-    $("#backHome").on("click", function(event) {
-        $("#game").css("display", "none");
-        $("#index").css("display", "block");
-        socket.emit("player leave", toJson(currentGame.roomId, guestId));
-        event.stopPropagation();
-    });
-    $("#backHome").on("mouseover", function() {
-        $(this).css("background-color", "#555555");
-    });
-    $("#backHome").on("mouseleave", function() {
-        $(this).css("background-color", "#666666");
-    });
-    $("#startGame").on("click", function(event) {
-        /* if nbr player < 2 pas start */
-        if (currentGame.playerNumber < 2){
-            if (hasClicked == 0){
-                $("#startGame").append("<p style='color: red'>You must at least 2 to start a game</p>");
-            }
-            hasClicked = 1;
-        }
-        else {
-            hasClicked = 0;
-            socket.emit("start game");
-        }
-        event.stopPropagation();
-    });
-    $("#startGame").on("mouseover", function() {
-        $(this).css("background-color", "#555555");
-    });
-    $("#startGame").on("mouseleave", function() {
-        $(this).css("background-color", "#666666");
-    });
-    /* ----- END LISTENERS ----- */
 </script>
+<script src="javascripts/clientFcts.js"></script>
+<script src="javascripts/clientListeners.js"></script>
+<script src="javascripts/clientAccountDisplay.js"></script>
+<script src="javascripts/clientCDLGames.js"></script>
+<script src="javascripts/clientMainLoop.js"></script>
+
 </html>

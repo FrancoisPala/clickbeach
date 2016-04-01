@@ -24,7 +24,6 @@ var gameRoom(playerName, roomName, roomId, socket) {
     var players = [playerName]; /* array of sockets */
 
 io.on('connection', function (socket) {
-    console.log("connection");
     var gameRoom = {
         playerNumber: 0,
         roomName: "",
@@ -82,14 +81,18 @@ io.on('connection', function (socket) {
 
     socket.on("player leave", function(jsonInfos) {
         var infos = JSON.parse(jsonInfos).split(" ");
-        console.log("player leave, jsonInfos = "+ jsonInfos + ", infos = " + infos);
         for (var i = 0; i < gameList.length; i++){
             if (gameList[i].roomId == infos[0]){
                 gameList[i].playerNumber--;
                 gameList[i].playerSockets.delete(infos[1]);
-                console.log(gameList[i].players + " on delete " + infos[1]);
-                gameList[i].players.delete(infos[1]);
-                if (gameList[i].playerNumber < 1) {
+                //gameList[i].players.delete(infos[1]);
+                for (var j = 0; j < gameList[i].players.length; j++){
+                    if (gameList[i].players[j] == infos[1]) {
+                        var index = gameList[i].players[j].indexOf(j);
+                        gameList[i].players.splice(index, 1);
+                    }
+                }
+                if (gameList[i].playerNumber == 0) {
                     var index = gameList.indexOf(i);
                     gameList.splice(index, 1);
                 }
