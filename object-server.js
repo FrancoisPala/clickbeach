@@ -25,6 +25,10 @@ class Server {
     incrementGameId (){
         ++this.gameId;
     }
+
+    incrementGuestId () {
+        ++this.guestId;
+    }
 }
 
 module.exports = function(port) {return new Server(port);};
