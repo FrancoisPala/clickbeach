@@ -2,28 +2,46 @@
  * Created by Jam on 07-Mar-16.
  */
 
-var express = require('express');
+/*var express = require('express');
 var _ = require('lodash');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+
+
 app.use(express.static('public'));
 
 server.listen(8080);
 
 
-var gameNumber = 0; /* to create room ids */
-var gameId = 0; /* to create room ids */
-var guestId = 0; /* to create guest ids */
+
+
+var gameNumber = 0; /* to create room ids
+var gameId = 0; /* to create room ids
+var guestId = 0; /* to create guest ids
 var gameList = []; /* all the games currently played on the serv. Contains an array of gameRoom objects */
+
+function main() {
+    "use strict";
+    console.log("avant le require");
+    let server = require("./object-server.js").constructor(8080);
+    console.log("avant le start " + server.port);
+    server.start();
+}
+
+main();
+
 /*
-var gameRoom(playerName, roomName, roomId, socket) {
-    var playerNumber = 1;
-    var roomName = roomName;
-    var roomId = roomId;
-    var players = [playerName]; /* array of sockets */
+
+
 
 io.on('connection', function (socket) {
+    // Does the player have an account?
+
+    // create a player
+
+    showCurrentGames();
+
     var gameRoom = {
         playerNumber: 0,
         roomName: "",
@@ -31,7 +49,6 @@ io.on('connection', function (socket) {
         playerSockets: new Map(),
         players: []
     };
-    showCurrentGames();
 
 
     socket.emit("account info", guestId++);
@@ -41,13 +58,13 @@ io.on('connection', function (socket) {
         var infos = JSON.parse(jsonInfos).split(" ");
         gameNumber += 1;
         gameId += 1;
-        /*create a game*/
+        //create a game
         gameRoom.playerNumber++;
         gameRoom.roomName = infos[0];
         gameRoom.roomId = gameId;
         gameRoom.playerSockets.set(infos[1], socket);
-        /*gameRoom.playerSockets[infos[1]] = gameRoom.playerSockets[infos[1]] || [];
-        gameRoom.playerSockets[infos[1]].push(socket);*/
+        //gameRoom.playerSockets[infos[1]] = gameRoom.playerSockets[infos[1]] || [];
+        gameRoom.playerSockets[infos[1]].push(socket);
         //gameRoom.playerSockets.push(socket);
         gameRoom.players.push(infos[1]);
         gameList.push(gameRoom);
@@ -56,7 +73,7 @@ io.on('connection', function (socket) {
         }));
         var gRToSend = omitPlayerSockets(gameRoom);
 
-        /* Here find a way to update everybody's list of game view to dynamically show the new games */
+        // Here find a way to update everybody's list of game view to dynamically show the new games
 
 
         socket.emit("join game", gRToSend);
@@ -64,7 +81,7 @@ io.on('connection', function (socket) {
     
     socket.on("request join game", function (jsonInfos) {
         var infos = JSON.parse(jsonInfos).split(" ");
-        /* 1ere etape = trouver la room*/
+        // 1ere etape = trouver la room
         for (var i = 0; i < gameList.length; i++){
             if (gameList[i].roomId == infos[0]){
                 gameList[i].playerNumber++;
@@ -76,7 +93,7 @@ io.on('connection', function (socket) {
             }
         }
 
-        /* puis l'envoyer */
+        // puis l'envoyer
     });
 
     socket.on("player leave", function(jsonInfos) {
@@ -114,3 +131,5 @@ io.on('connection', function (socket) {
         }));
     }
 });
+
+*/
