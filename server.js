@@ -1,6 +1,7 @@
 /**
  * Created by Jam on 07-Mar-16.
  */
+"use strict";
 
 /*var express = require('express');
 var _ = require('lodash');
@@ -22,11 +23,9 @@ var guestId = 0; /* to create guest ids
 var gameList = []; /* all the games currently played on the serv. Contains an array of gameRoom objects */
 
 function main() {
-    "use strict";
-    console.log("avant le require");
-    let server = require("./object-server.js").constructor(8080);
-    console.log("avant le start " + server.port);
+    let server = require("./object-server.js")(8080);
     server.start();
+    console.log("Server Started on port " + server.port);
 }
 
 main();
