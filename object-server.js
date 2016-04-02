@@ -14,7 +14,7 @@ class Server {
 
         this.gameId = 0; /* to create room ids */
         this.guestId = 0; /* to create guest ids */
-        this.gameList = []; /* all the games currently played on the serv. Contains an array of gameRoom objects */
+        this.gameList = []; /* all the games currently played on the serv. Contains an array of Game objects */
     }
 
     start() {
@@ -38,11 +38,9 @@ class Server {
     }
     addGameToList (Game) {
         this.gameList.push(Game);
-
         //Ici on peut en profiter pour envoyer un evenement qui montre la liste de game pour afficher ça tuot le temps dynamiquement au fur et a mesure youpitralala
-
-
     }
+
 }
 
 module.exports = function(port) {return new Server(port);};

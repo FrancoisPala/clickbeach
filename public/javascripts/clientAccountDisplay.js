@@ -5,7 +5,7 @@
 socket.on("account info", function(data) {
     var playerName = $('#displayInfoRight');
     playerName.html("");
-    playerName.append("You are guest: " + data);
-    guestId = data;
+    playerName.append("You are guest: " + data.tempId);
+    guestId = data.tempId;
 });
 /* ----- END OF HANDLING USER ACCOUNT ----- */
