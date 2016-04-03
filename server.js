@@ -55,10 +55,10 @@ function main() {
         });
 
         function joinGame(game) {
-            let gRTosend = server._.map(server.gameList.playerList, function(player) {
+            let gRToSend = server._.map(server.gameList.playerList, function(player) {
                 return server._.omit(player, "socket");
             });
-            server.io.emit("join game", server._.omit(Player, "socket"));
+            server.io.emit("join game", gRToSend);
         }
 
         function omitPlayerSocket(player) {

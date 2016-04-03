@@ -42,7 +42,6 @@ function toJson(/*whatever we want*/) {
 function createGame() {
     var gameName = document.getElementById("createText").value;
     if (gameName){
-        console.log();
         socket.emit('createGame', toJson(gameName, guestId))
     }
     document.getElementById("createText").value = "";
