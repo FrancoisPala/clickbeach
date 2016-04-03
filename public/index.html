@@ -54,14 +54,15 @@
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-2.2.1.min.js"   integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="   crossorigin="anonymous"></script>
+<script src="javascripts/clientObjects.js"></script>
 <script>
     var socket = io();
     var guestId = 0;
     var currentGame = {
-        playerNumber: 0,
+        playerCount: 0,
         roomName: "",
         roomId: 0,
-        players: []
+        scoreBoard: []
     };
     var hasClicked = 0;
 

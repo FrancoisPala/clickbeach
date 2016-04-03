@@ -3,12 +3,26 @@
  */
 "use strict";
 
+class   cPlayer {
+    constructor(name, score) {
+        this.name = name;
+        this.score = score;
+    };
+
+    get getName() {
+        return this.name;
+    }
+    get getScore() {
+        return this.score;
+    }
+}
+
 /* Object Game */
-class Game {
+class   Game {
     constructor (roomName, roomId) {
         this.playerList = []; /* map de player avec le score devant? Cannot be map (not enough entries) */
         this.scoreBoard = [];
-        this.playerCount = 1;
+        this.playerCount = 0;
         this.roomName = roomName;
         this.roomId = roomId;
         this.started = 0;
@@ -17,19 +31,27 @@ class Game {
     };
 
     addPlayerToList(player) {
-        console.log("--We here add a player to the list, playerId is: " + player.tempId);
+        //console.log("--We here add a player to the list, playerId is: " + player.tempId);
+
         this.playerList.push(player);
-        console.log("--The playerList is now composed of: " + this.playerList[0].tempId);
+
+        //console.log("--The playerList is now composed of: " + this.playerList[0].tempId);
+
         this.addPlayerToScoreboard(player);
-        console.log("--And now the scoreBoard is made of: " + this.scoreBoard[player.tempId])
+
+        //console.log("--And now the scoreBoard is made of: " + this.scoreBoard[player.tempId])
+
         this.changePlayerCount(0);
         //console.log("--Let's then access the player in the list, " + this.playerList[player].tempId)
     }
 
     addPlayerToScoreboard(player){
-        console.log("--adding a player to the score, tempid = " + player.tempId);
-        this.scoreBoard[player.tempId] = 0;
-        console.log("--now added, scoreboard[tempid] = " + this.scoreBoard[player.tempId])
+        //console.log("--adding a player to the score, tempid = " + player.tempId);
+        console.log("yop");
+        let CPlayer = new cPlayer(player.tempId, 0);
+        console.log("floup");
+        this.scoreBoard.push(CPlayer);
+        //console.log("--now added, scoreboard[tempid] = " + this.scoreBoard[player.tempId])
     }
 
     /*removePlayerFromScoreboard(player) {
@@ -69,6 +91,7 @@ class Game {
 
     }
 }
+
 
 module.exports = function(roomName, roomId) {return new Game(roomName, roomId);};
 
