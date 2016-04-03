@@ -47,9 +47,7 @@ class   Game {
 
     addPlayerToScoreboard(player){
         //console.log("--adding a player to the score, tempid = " + player.tempId);
-        console.log("yop");
         let CPlayer = new cPlayer(player.tempId, 0);
-        console.log("floup");
         this.scoreBoard.push(CPlayer);
         //console.log("--now added, scoreboard[tempid] = " + this.scoreBoard[player.tempId])
     }

@@ -42,7 +42,9 @@ function toJson(/*whatever we want*/) {
 function createGame() {
     var gameName = document.getElementById("createText").value;
     if (gameName){
+        console.log("PUGNGANGNAGNAGNAGNAGNAG");
         socket.emit('createGame', toJson(gameName, guestId))
+        console.log("AIZEAZIOEUAZOEAZIOEUAZ ");
     }
     document.getElementById("createText").value = "";
 }

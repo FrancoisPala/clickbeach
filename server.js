@@ -78,7 +78,7 @@ function main() {
                 return server._.omit(player, "socket");
             });*/
             let gRToSend = _.omit(game, "playerList");
-            console.log(JSON.stringify(gRToSend, false, null));
+            console.log("on stringify! : " + JSON.stringify(gRToSend, false, null));
 
             //console.log("sending ok to join the game, let's see gRToSend: " + gRToSend.playerCount + " " + gRToSend.roomName +  " " + gRToSend.roomId);
             io.emit("join game", gRToSend);
@@ -90,15 +90,14 @@ function main() {
         }
 
         function showCurrentGames() {
-            //console.log("in the show current games and server gamelist = " + server.gameList[0]);
-            socket.emit("current games", _.map(server.gameList, function(game) {
-                //console.log("in the first map");
-                let tmp = _.map(game.playerList, function(player) {
-                    return _.omit(player, 'socket');
-                });
-                console.log(tmp.playerCount);
-                return tmp;
-            }));
+            if (server.gameList.length > 0) {
+                socket.emit("current games", _.map(server.gameList, function(game) {
+                    let tmp = _.map(game.playerList, function(player) {
+                        return _.omit(player, 'socket');
+                    });
+                    return tmp;
+                }));
+            }
         }
     });
 }
