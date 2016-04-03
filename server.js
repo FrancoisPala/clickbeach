@@ -58,6 +58,7 @@ function main() {
             let gRToSend = server._.map(server.gameList.playerList, function(player) {
                 return server._.omit(player, "socket");
             });
+            console.log("sending ok to join the game");
             server.io.emit("join game", gRToSend);
         }
 

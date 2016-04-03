@@ -45,7 +45,6 @@ function createGame() {
         socket.emit('createGame', toJson(gameName, guestId))
     }
     document.getElementById("createText").value = "";
-    displayGame();
 }
 
 function displayGame() {
