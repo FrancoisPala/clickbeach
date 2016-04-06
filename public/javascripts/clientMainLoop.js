@@ -3,9 +3,10 @@
  */
 /* ----- MAIN LOOP ????? ----- */
 socket.on("join game", function(gameRoom) {
+    console.log("received join game socket message");
     var GIR = $("#gameInfoRight");
     currentGame.playerCount = gameRoom.playerCount;
-    //console.log("so the playernumber = " + currentGame.playerCount);
+    console.log("so the playernumber = " + currentGame.playerCount);
     currentGame.roomName = gameRoom.roomName;
     //console.log("so the roomName = " + currentGame.roomName);
     currentGame.roomId = gameRoom.roomId;

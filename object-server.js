@@ -4,7 +4,7 @@
 "use strict";
 
 class Server {
-    constructor(port) {
+    constructor() {
         /*this.port = port;
         this.express = require('express');
         this._ = require('lodash');
@@ -17,9 +17,7 @@ class Server {
         this.gameList = []; /* all the games currently played on the serv. Contains an array of Game objects */
     }
 
-    start() {
 
-    }
 
     get getGameId (){
         return this.gameId;
