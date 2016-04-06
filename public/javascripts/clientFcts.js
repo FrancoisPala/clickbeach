@@ -53,4 +53,9 @@ function displayGame() {
     $("#index").css("display", "none");
     $("#game").css("display", "block");
 }
+
+function displayIndex() {
+    $("#game").css("display", "none");
+    $("#index").css("display", "block");
+}
 /* ----- END FUNCTIONS ----- */

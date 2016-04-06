@@ -70,23 +70,39 @@ function main() {
             for (let i = 0; i < _.size(server.gameList); i++) {
                 if (server.gameList[i].getRID == infos[0]) {
                     server.gameList[i].removePlayerFromList(Player);
-                    socket.emit("leave game");
+                    //socket.emit("leave game");
+                    //sendPlayersChanges(game, "left");
                 }
             }
         });
+
+        function sendPlayersChanges(game, change) {
+            for (let i = 0; i < _.size(game.playerList); i++) {
+                if (Player.tempId != game.playerList[i].tempId){
+                    if (change == "joined"){
+                        game.playerList[i].socket.emit("player joined", omitPlayerSocket(Player));
+                    }
+                    else if (change == "left") {
+                        game.playerList[i].socket.emit("player left", omitPlayerSocket(Player));
+                    }
+                }
+            }
+        }
 
         function joinGame(game) {
             //console.log("inspect the arriving game: " + game.playerCount + " " + game.roomName + " " + game.roomId);
             /*let gRToSend = server._.map(game.playerList, function(player) {
                 return server._.omit(player, "socket");
             });*/
+
             let gRToSend = _.omit(game, "playerList");
             //console.log("on stringify! : " + JSON.stringify(gRToSend, false, null));
 
             //console.log("sending ok to join the game, let's see gRToSend: " + gRToSend.playerCount + " " + gRToSend.roomName +  " " + gRToSend.roomId);
 
-            socket.emit("join game", gRToSend);
+            socket.emit("join game", gRToSend); // sending a notif to all players that a players joined
 
+            sendPlayersChanges(game, "joined");
             //console.log("game maybe joined");
         }
 
