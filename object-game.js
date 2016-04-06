@@ -20,8 +20,8 @@ class   cPlayer {
 /* Object Game */
 class   Game {
     constructor (roomName, roomId) {
-        this.playerList = []; /* map de player avec le score devant? Cannot be map (not enough entries) */
-        this.scoreBoard = [];
+        this.playerList = []; // Just an array of player objects containing sockets. Don't send em, all you need is in the scoreboard
+        this.scoreBoard = []; // Nom de joueur plus score, all we need for now
         this.playerCount = 0;
         this.roomName = roomName;
         this.roomId = roomId;
@@ -29,6 +29,10 @@ class   Game {
         this.leader = null;
         this.leaderName = "";
     };
+
+    get getRID () {
+        return this.roomId;
+    }
 
     addPlayerToList(player) {
         //console.log("--We here add a player to the list, playerId is: " + player.tempId);

@@ -4,9 +4,10 @@
 /* ----- CREATE, DISPLAY AND LISTEN TO CURRENT GAMES ----- */
 socket.on("current games", function(gameList) {
     var cG = $("#currentGames").empty();
-    //console.log("in the current games displayer with gamelist[0] = " + gameList[0].playerCount + " and " + gameList[0].roomId);
-    for (i = 0; i < gameList.length; i++) {
-        cG.append("<div class='gameList'>" + gameList[i].roomName + "<p class='gameListD'>" + " Number Of Players: " + gameList[i].playerNumber + " id: " + gameList[i].roomId + "</p>");
+    //console.log("in the current games displayer with gamelist[0] = " + gameList[0].playerCount + " and " + gameList[0].roomId );
+    //console.log(" and gameList.length = " + Object.keys(gameList).length);
+    for (i = 0; i < Object.keys(gameList).length; i++) {
+        cG.append("<div class='gameList'>" + gameList[i].roomName + "<p class='gameListD'>" + " Number Of Players: " + gameList[i].playerCount + " id: " + gameList[i].roomId + "</p>");
     } /* Dynamically Loads the list of games */
     /* ----- SET LISTENERS ON GAME LIST----- */
     var selectorGameList = document.querySelectorAll('.gameList');

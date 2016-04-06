@@ -21,4 +21,9 @@ socket.on("join game", function(gameRoom) {
     }
     displayGame();
 });
+
+socket.on("leave game", function() {
+    "use strict";
+
+});
 /* ----- END MAIN LOOP ----- */
