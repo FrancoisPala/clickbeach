@@ -33,30 +33,17 @@ function main() {
         showCurrentGames();
 
         socket.on('createGame', function (jsonInfos) {
-            console.log("in the create game");
             let infos = JSON.parse(jsonInfos).split(" ");
-
-            //console.log("client created game with infos Name = " + infos[0] + " and Client Id = " + infos[1]);
-
             server.incrementGameId();
             let gameRoom = gr(infos[0], server.getGameId);
-
-            //console.log("Game room created, player count = " + gameRoom.playerCount + " and roomName = " + gameRoom.roomName + " and roomId = " + gameRoom.roomId);
-            //console.log("Now we add a player to the list, tempId = " + Player.tempId);
-
             gameRoom.addPlayerToList(Player);
-
-            //console.log("So now the player is in the room, " + gameRoom.playerList[0]);
-
             server.addGameToList(gameRoom);
-
-            //console.log("And now the room is in the list, " + server.gameList[0].roomId);
-            //console.log("about to join the room");
             joinGame(gameRoom);
         });
 
         socket.on("request join game", function (jsonInfos) {
             let infos = JSON.parse(jsonInfos).split(" ");
+            console.log("client requested to join game with roomId = " + infos[0]);
             for (let i = 0; i < _.size(server.gameList); i++) {
                 if (server.gameList[i].getRID == infos[0]) {
                     server.gameList[i].addPlayerToList(Player);
@@ -65,22 +52,27 @@ function main() {
             }
         });
 
-        socket.on("player leave", function(jsonInfos) {
+        /*socket.on("player leave", function(jsonInfos) {
             var infos = JSON.parse(jsonInfos).split(" ");
             for (let i = 0; i < _.size(server.gameList); i++) {
                 if (server.gameList[i].getRID == infos[0]) {
                     server.gameList[i].removePlayerFromList(Player);
-                    //socket.emit("leave game");
-                    //sendPlayersChanges(game, "left");
+                        socket.emit("leave game");
+                    sendPlayersChanges(game, "left");
                 }
             }
-        });
+        });*/
 
         function sendPlayersChanges(game, change) {
             for (let i = 0; i < _.size(game.playerList); i++) {
                 if (Player.tempId != game.playerList[i].tempId){
                     if (change == "joined"){
-                        game.playerList[i].socket.emit("player joined", omitPlayerSocket(Player));
+                        //if i send the new player, i have to append him to the list in the client. In the wrong order then
+                        //if i send the whole game, the client will just have to reprint the list of players, in order.
+
+                        let tmp = _.cloneDeep(game);
+                        tmp = _.omit(tmp, "playerList");
+                        game.playerList[i].socket.emit("player joined", tmp); //send the game not the player
                     }
                     else if (change == "left") {
                         game.playerList[i].socket.emit("player left", omitPlayerSocket(Player));
@@ -94,41 +86,40 @@ function main() {
             /*let gRToSend = server._.map(game.playerList, function(player) {
                 return server._.omit(player, "socket");
             });*/
+            console.log("arriving in the joinGame");
 
-            let gRToSend = _.omit(game, "playerList");
+            //let gRToSend = _.cloneDeep(game);
+
+
+            let gRToSend = _.omit(_.cloneDeep(game), "playerList"); // removing the sockets from the object
+
             //console.log("on stringify! : " + JSON.stringify(gRToSend, false, null));
 
             //console.log("sending ok to join the game, let's see gRToSend: " + gRToSend.playerCount + " " + gRToSend.roomName +  " " + gRToSend.roomId);
 
             socket.emit("join game", gRToSend); // sending a notif to all players that a players joined
 
+            console.log("At the end of joinGame, socket du tout premier joueur existe" + server.gameList[0].playerList[0].socket)
+
             sendPlayersChanges(game, "joined");
             //console.log("game maybe joined");
         }
 
         function omitPlayerSocket(player) {
-            return (_.omit(player, "socket"));
+            let tmp = _.cloneDeep(player);
+            return _.omit(tmp, "socket");
         }
 
         function showCurrentGames() {
-
             // Much better way to do it: just remove the playerList as it is a list of players and we juut wanna show games...
-
             if (server.gameList.length > 0) {
                 var all;
-                //console.log("lolipouet");
-                var copy = {};
-                _.merge(copy, server.gameList); //assignation by copy of the server.gameList object
-                //console.log(server.gameList[0].roomName);
-                //console.log("heyoooooooooooo: " + copy[0].roomId + " copy length: " + _.size(copy) + " voila");
+                var copy = _.cloneDeep(server.gameList);
                 for (let i = 0; i < _.size(copy); i++) {
                     //now going through games in the list. copy[i] is a game.
-                    //console.log("du coup: " );
                     for (let j = 0; j < copy[i].playerList.length; j++) {
-                        //console.log("non?");
                         //here going through the players in the playerlist of a game
                         copy[i].playerList[j] = _.omit(copy[i].playerList[j], "socket")
-                        //console.log("i = " + i + ", j = " + j + ", and the result is: " + JSON.stringify(copy[i].playerList[j]));
                     }
                 }
                 socket.emit("current games", copy);

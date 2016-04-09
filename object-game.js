@@ -35,25 +35,14 @@ class   Game {
     }
 
     addPlayerToList(player) {
-        //console.log("--We here add a player to the list, playerId is: " + player.tempId);
-
         this.playerList.push(player);
-
-        //console.log("--The playerList is now composed of: " + this.playerList[0].tempId);
-
         this.addPlayerToScoreboard(player);
-
-        //console.log("--And now the scoreBoard is made of: " + this.scoreBoard[player.tempId])
-
         this.changePlayerCount(0);
-        //console.log("--Let's then access the player in the list, " + this.playerList[player].tempId)
     }
 
     addPlayerToScoreboard(player){
-        //console.log("--adding a player to the score, tempid = " + player.tempId);
         let CPlayer = new cPlayer(player.tempId, 0);
         this.scoreBoard.push(CPlayer);
-        //console.log("--now added, scoreboard[tempid] = " + this.scoreBoard[player.tempId])
     }
 
     /*removePlayerFromScoreboard(player) {
