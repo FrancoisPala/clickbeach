@@ -14,6 +14,7 @@ $("#createText").on("keydown", function(event) {
         event.stopPropagation();
     }
 }); /* CREATE GAME VIA TEXT BOX */
+// BH is for Back Home (button)
 BH.on("click", function(event) {
     $("#game").css("display", "none");
     $("#index").css("display", "block");
@@ -26,9 +27,12 @@ BH.on("mouseover", function() {
 BH.on("mouseleave", function() {
     $(this).css("background-color", "#666666");
 });
+// SG is for Start Game (button)
 SG.on("click", function(event) {
-    /* if nbr player < 2 pas start */
-    if (currentGame.playerNumber < 2){
+
+    socket.emit("request start game");
+    /*
+    if (currentGame.playerCount < 2){
         if (hasClicked == 0){
             $(this).append("<p style='color: red'>You must be at least 2 to start a game</p>");
         }
@@ -37,7 +41,7 @@ SG.on("click", function(event) {
     else {
         hasClicked = 0;
         socket.emit("start game");
-    }
+    }*/
     event.stopPropagation();
 });
 SG.on("mouseover", function() {

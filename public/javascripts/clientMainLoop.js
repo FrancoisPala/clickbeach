@@ -11,7 +11,12 @@ socket.on("join game", function(gameRoom) {
 
 socket.on("player joined", function (data) {
     "use strict";
-    console.log("received player joined socket message");
+    updatePlayerInfos(data);
+    appendPlayers();
+});
+
+socket.on("player left", function (data) {
+    "use strict";
     updatePlayerInfos(data);
     appendPlayers();
 });
@@ -19,6 +24,16 @@ socket.on("player joined", function (data) {
 socket.on("leave game", function () {
     "use strict";
     displayIndex();
+});
+
+socket.on("cannot start game", function () {
+    "use strict";
+    $("#startGame").append("<p style='color: red'>You must be at least 2 to start a game</p>");
+});
+
+socket.on("game start", function () { //HERE THE GAME SI STARTED
+    "use strict";
+
 });
 
 function appendPlayers () {

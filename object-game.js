@@ -59,7 +59,7 @@ class   Game {
         this.changePlayerCount(1); //minus one on the player count
     }
 
-    removeFromArray(array, element, number) {
+    static removeFromArray(array, element, number) {
         let index = array.indexOf(element);
         if (index > -1 && number > 0) {
             array.splice(index, number);

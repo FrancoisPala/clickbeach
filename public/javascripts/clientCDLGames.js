@@ -3,9 +3,13 @@
  */
 /* ----- CREATE, DISPLAY AND LISTEN TO CURRENT GAMES ----- */
 socket.on("current games", function(gameList) {
+    showCurrentGames(gameList);
+    /* ----- END ----- */
+});
+
+function showCurrentGames (gameList) {
+    "use strict";
     var cG = $("#currentGames").empty();
-    //console.log("in the current games displayer with gamelist[0] = " + gameList[0].playerCount + " and " + gameList[0].roomId );
-    //console.log(" and gameList.length = " + Object.keys(gameList).length);
     for (i = 0; i < Object.keys(gameList).length; i++) {
         cG.append("<div class='gameList'>" + gameList[i].roomName + "<p class='gameListD'>" + " Number Of Players: " + gameList[i].playerCount + " id: " + gameList[i].roomId + "</p>");
     } /* Dynamically Loads the list of games */
@@ -20,11 +24,6 @@ socket.on("current games", function(gameList) {
         selectorGameList.item(i).removeEventListener("click", gameRoomClicker, false);
         selectorGameList.item(i).addEventListener("click", gameRoomClicker, false);
     }
-    /* ----- END ----- */
-});
+}
 
-/*socket.on("join game", function(data) {
-    displayGame();
-
-});*/
 /* ----- END OF HANDLING CURRENT GAMES ----- */
