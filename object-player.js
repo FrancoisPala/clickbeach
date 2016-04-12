@@ -9,6 +9,7 @@ class Player {
         this.tempId = tempId;
         this.socket = socket;
         this.currentRoom = -1;
+        this.life = -1;
         this.name = "";
         this.id = 0;
         this.mail = "";

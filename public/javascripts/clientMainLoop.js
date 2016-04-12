@@ -31,9 +31,12 @@ socket.on("cannot start game", function () {
     $("#startGame").append("<p style='color: red'>You must be at least 2 to start a game</p>");
 });
 
-socket.on("game start", function () { //HERE THE GAME SI STARTED
+socket.on("game start", function (data) { //HERE THE GAME IS STARTED
     "use strict";
+    //show the life bar
 
+    //start the countdown
+    //print the first circle
 });
 
 function appendPlayers () {

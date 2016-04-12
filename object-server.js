@@ -68,20 +68,53 @@ class Server {
         return _.omit(_.cloneDeep(player), "socket");
     }
 
+    getCopyGameRoomOmitSockets (gameRoom) {
+        let copy = _.cloneDeep(gameRoom);
+        for (let j = 0; j < copy.playerList.length; j++) {
+            //here going through the players in the playerlist of a game
+            copy.playerList[j] = _.omit(copy.playerList[j], "socket")
+        }
+        return copy;
+    }
+
     showCurrentGames(socket) {
-    // Much better way to do it: just remove the playerList as it is a list of players and we just wanna show games. But for now we'll keep this in case we want to show the users more info
-    if (this.gameList.length > 0) {
-        var copy = _.cloneDeep(this.gameList);
-        for (let i = 0; i < _.size(copy); i++) {
-            //now going through games in the list. copy[i] is a game.
-            for (let j = 0; j < copy[i].playerList.length; j++) {
-                //here going through the players in the playerlist of a game
-                copy[i].playerList[j] = _.omit(copy[i].playerList[j], "socket")
+        // Much better way to do it: just remove the playerList as it is a list of players and we just wanna show games. But for now we'll keep this in case we want to show the users more info
+        if (this.gameList.length > 0) {
+            let copy = _.cloneDeep(this.gameList);
+            for (let i = 0; i < _.size(copy); i++) {
+                //now going through games in the list. copy[i] is a game.
+                for (let j = 0; j < copy[i].playerList.length; j++) {
+                    //here going through the players in the playerlist of a game
+                    copy[i].playerList[j] = _.omit(copy[i].playerList[j], "socket")
+                }
+            }
+            socket.emit("current games", copy);
+        }
+    }
+
+    findCurrentRoom (roomId) {
+        for (let i = 0; i < _.size(this.gameList); i++) {
+            if (this.gameList[i].roomId == roomId) {
+                return this.gameList[i];
             }
         }
-        socket.emit("current games", copy);
     }
-}
+
+    setPlayerLife (player, nbr) {
+        player.life = nbr;
+    }
+
+    setPlayersLife (roomId, player, playerList, nbr) {
+        let gR = this.findCurrentRoom(roomId);
+        if (player != null && playerList != null) {
+            this.setPlayerLife(player, nbr);
+        }
+        else if (playerList != null && player == null) {
+            for (let i = 0; i < _.size(gR.playerList); i++) {
+                this.setPlayerLife(gR.playerList[i], nbr);
+            }
+        }
+    }
 
 }
 

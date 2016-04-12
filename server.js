@@ -82,24 +82,21 @@ function main() {
         // -> let's add a currentRoom attribute to teh player obj
         ///////////////////////////////////////////
 
-        function findCurrentRoom (roomId) {
-            for (let i = 0; i < _.size(server.gameList); i++) {
-                if (server.gameList[i].roomId == roomId) {
-                    return server.gameList[i];
-                }
-            }
-        }
 
         /* Sockets to deal with game start and play */
         socket.on("request start game", function () {
-            let gameRoom = findCurrentRoom(Player.currentRoom);
+            let gameRoom = server.findCurrentRoom(Player.currentRoom);
             if (gameRoom.playerCount < 2) {
                 socket.emit("cannot start game");
             }
             else {
-                socket.emit("game start");
+                //set all players life at 100
+                server.setPlayersLife(gameRoom.roomId, null, gameRoom.playerList, 100); //sets the life of all players in a room to 100
+                socket.emit("game start", server.getCopyGameRoomOmitSockets(gameRoom));
             }
         });
+
+
 
         /*function sendPlayersChanges(game, change) {
             for (let i = 0; i < _.size(game.playerList); i++) {
